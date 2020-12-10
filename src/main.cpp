@@ -5,7 +5,9 @@
 */
 #include <Arduino.h>
 #include "main.h"
+#include "ch/bsp.h"
 #include "BLE_server.h"
+#include "bme280.h"
 #include "lcd.h"
 // #include "lcd.h"
 
@@ -35,35 +37,54 @@ void setup()
   Serial2.begin(115200);
   Serial2.println("Starting BLE work!");
 
-  BS_Init();
+  BME280_Init();
+  // BS_Init();
   LCD_Init();
 }
 
+#define BME_SCAN (60 * 1000)
+u32 led_c = 0, bme_c = 0;
+bool led_f = false;
 void loop()
 {
   // put your main code here, to run repeatedly:
 
-  for (int i = 0; i < SMART_BUCKLE_NUM; i++)
+  // for (int i = 0; i < SMART_BUCKLE_NUM; i++)
+  // {
+  //   if (smartBuckles[i].isNew == true)
+  //   {
+  //     smartBuckles[i].isNew = false;
+
+  //     char *retStr = smartBuckles[i].toString();
+  //     Serial2.printf("smart buckle %d refresh : %s \r\n", i + 1, retStr);
+
+  //     char disStr[32] = {0};
+  //     sprintf(disStr, "%d %s", i + 1, smartBuckles[i].toString());
+
+  //     display.fillScreen(GxEPD_WHITE);
+  //     display.setCursor(0, (i + 1) * 10);
+  //     display.println(disStr);
+  //     display.update();
+  //   }
+  // }
+
+  if (millis() - bme_c > BME_SCAN)
   {
-    if (smartBuckles[i].isNew == true)
-    {
-      smartBuckles[i].isNew = false;
+    BME280_Scan();
+    display.fillScreen(GxEPD_WHITE);
+    display.setCursor(0, 6 * 10);
 
-      char *retStr = smartBuckles[i].toString();
-      Serial2.printf("smart buckle %d refresh : %s \r\n", i + 1, retStr);
+    display.printf("T:%3.1f H:%3.1f \r\n", bmeInfo.temperature, bmeInfo.humidity);
+    display.printf("A:%3.1f P:%3.1f", bmeInfo.altitude, bmeInfo.pressure);
+    display.update();
 
-      char disStr[32] = {0};
-      sprintf(disStr, "%d %s", i + 1, smartBuckles[i].toString());
-
-      display.fillScreen(GxEPD_WHITE);
-      display.setCursor(0, (i + 1) * 10);
-      display.println(disStr);
-      display.update();
-    }
+    bme_c = millis();
   }
 
-  digitalWrite(LED, HIGH);
-  delay(100);
-  digitalWrite(LED, LOW);
-  delay(100);
+  if (millis() - led_c > 100)
+  {
+    digitalRead(LED) == HIGH ? digitalWrite(LED, LOW) : digitalWrite(LED, HIGH);
+    // led_f == false ? (digitalWrite(LED, LOW), led_f = true) : (digitalWrite(LED, HIGH), led_f = false);
+    led_c = millis();
+  }
 }
