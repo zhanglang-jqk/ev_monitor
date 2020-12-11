@@ -8,6 +8,7 @@
 #include "ch/bsp.h"
 #include "BLE_server.h"
 #include "bme280.h"
+#include "m702.h"
 #include "lcd.h"
 // #include "lcd.h"
 
@@ -34,7 +35,7 @@ void setup()
 {
   pinMode(LED, OUTPUT);
 
-  Serial2.begin(115200);
+  Serial2.begin(9600);
   Serial2.println("Starting BLE work!");
 
   BME280_Init();
@@ -42,8 +43,8 @@ void setup()
   LCD_Init();
 }
 
-#define BME_SCAN (60 * 1000)
-u32 led_c = 0, bme_c = 0;
+#define SENSOR_SCAN (60 * 1000)
+u32 led_c = 0, disRefresh_c = 0;
 bool led_f = false;
 void loop()
 {
@@ -68,17 +69,31 @@ void loop()
   //   }
   // }
 
-  if (millis() - bme_c > BME_SCAN)
+  // if (millis() - disRefresh_c > SENSOR_SCAN)
   {
     BME280_Scan();
+    M702_Scan();
+
     display.fillScreen(GxEPD_WHITE);
-    display.setCursor(0, 6 * 10);
+    display.setCursor(0, 11 * 10);
 
-    display.printf("T:%3.1f H:%3.1f \r\n", bmeInfo.temperature, bmeInfo.humidity);
+    display.printf("T:%3.1f  H:%3.1f \r\n", bmeInfo.temperature, bmeInfo.humidity);
     display.printf("A:%3.1f P:%3.1f", bmeInfo.altitude, bmeInfo.pressure);
-    display.update();
+    display.println();
+    if (m702.isnew == true)
+    {
+      Serial2.printf("CO2:%d CH2O:%d TVOC:%d PM2.5:%d PM2.0:%d temperature:%.2f humidity:%.2f \r\n",
+                     m702.CO2, m702.CH2O, m702.TVOC, m702.PM25, m702.PM10, m702.temperature, m702.humidity);
 
-    bme_c = millis();
+      display.printf("2:%d O:%d C:%d \r\n", m702.CO2, m702.CH2O, m702.TVOC);
+      display.printf("PM25:%d PM20:%d \r\n", m702.PM25, m702.PM10);
+      display.printf("T:%.1f H:%.1f", m702.temperature, m702.humidity);
+
+      m702.isnew = false;
+    }
+
+    display.update();
+    disRefresh_c = millis();
   }
 
   if (millis() - led_c > 100)
