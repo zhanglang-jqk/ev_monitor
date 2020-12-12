@@ -29,7 +29,7 @@ JsonObject m702Obj = payload.createNestedObject("m702");
 /* º¯ÊýÊµÏÖ ---------------------------------------------------------------------*/
 void CI_Init()
 {
-    CI_SERIAL.begin(115200);
+    CI_SERIAL.begin(9600);
 
     for (int i = 0; i < SMART_BUCKLE_NUM; i++)
     {
@@ -57,34 +57,32 @@ void CI_Init()
     payload.add(m702Obj);
 
     root["payload"] = payload;
-    // root.createNestedObject("checksum");
-    // serializeJsonPretty(payload, Serial2);
+    // root.add(payload);
+
 }
 void CI_Scan()
 {
     for (int i = 0; i < SMART_BUCKLE_NUM; i++)
     {
-        smartBucklesDoc[i]["temperature"] = smartBuckles[i].temperature;
-        smartBucklesDoc[i]["heartbeat"] = smartBuckles[i].heartbeat;
-        smartBucklesDoc[i]["finger_f"] = smartBuckles[i].finger_f;
-
-        payload["smartBuckles"][i]["temperature"] = smartBuckles[i].temperature;
-        payload["smartBuckles"][i]["heartbeat"] = smartBuckles[i].heartbeat;
-        payload["smartBuckles"][i]["finger_f"] = smartBuckles[i].finger_f;
+        root["payload"]["smartBuckles"][i]["temperature"] = smartBuckles[i].temperature;
+        root["payload"]["smartBuckles"][i]["heartbeat"] = smartBuckles[i].heartbeat;
+        root["payload"]["smartBuckles"][i]["finger_f"] = smartBuckles[i].finger_f;
     }
 
-    payload["bme280"]["temperature"] = bmeInfo.temperature;
-    payload["bme280"]["humidity"] = bmeInfo.humidity;
-    payload["bme280"]["altitude"] = bmeInfo.altitude;
-    payload["bme280"]["pressure"] = bmeInfo.pressure;
+    root["payload"]["bme280"]["temperature"] = bmeInfo.temperature;
+    root["payload"]["bme280"]["humidity"] = bmeInfo.humidity;
+    root["payload"]["bme280"]["altitude"] = bmeInfo.altitude;
+    root["payload"]["bme280"]["pressure"] = bmeInfo.pressure;
 
-    payload["m702"]["CO2"] = m702.CO2;
-    payload["m702"]["CH2O"] = m702.CH2O;
-    payload["m702"]["TVOC"] = m702.TVOC;
-    payload["m702"]["PM25"] = m702.PM25;
-    payload["m702"]["PM10"] = m702.PM10;
-    payload["m702"]["temperature"] = m702.temperature;
-    payload["m702"]["humidity"] = m702.humidity;
+    root["payload"]["m702"]["CO2"] = m702.CO2;
+    root["payload"]["m702"]["CH2O"] = m702.CH2O;
+    root["payload"]["m702"]["TVOC"] = m702.TVOC;
+    root["payload"]["m702"]["PM25"] = m702.PM25;
+    root["payload"]["m702"]["PM10"] = m702.PM10;
+    root["payload"]["m702"]["temperature"] = m702.temperature;
+    root["payload"]["m702"]["humidity"] = m702.humidity;
+
+
 }
 
 char jsonBuf[1024] = {0};
@@ -102,6 +100,12 @@ void CI_Transimit()
 
     serializeJson(root, jsonBuf, sizeof(jsonBuf));
     CI_SERIAL.println(jsonBuf);
+    Serial2.println(jsonBuf);
+
+
+
+    // serializeJsonPretty(root,Serial2);
+    // serializeJsonPretty(payload,Serial2);
 
 }
 //computer_int.cpp

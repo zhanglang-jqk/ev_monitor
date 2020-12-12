@@ -52,9 +52,6 @@ void lcdDisplay()
   display.printf("A:%3.1f P:%3.1f", bmeInfo.altitude, bmeInfo.pressure);
   display.println();
 
-  Serial2.printf("CO2:%d CH2O:%d TVOC:%d PM2.5:%d PM2.0:%d temperature:%.2f humidity:%.2f \r\n",
-                 m702.CO2, m702.CH2O, m702.TVOC, m702.PM25, m702.PM10, m702.temperature, m702.humidity);
-
   display.printf("2:%d O:%d C:%d \r\n", m702.CO2, m702.CH2O, m702.TVOC);
   display.printf("PM25:%d PM20:%d \r\n", m702.PM25, m702.PM10);
   display.printf("T:%.1f H:%.1f", m702.temperature, m702.humidity);
@@ -95,6 +92,9 @@ void loop()
     lcdDisplay();
     disRefresh_c = millis();
   }
+
+  Serial2.printf("CO2:%d CH2O:%d TVOC:%d PM2.5:%d PM2.0:%d temperature:%.2f humidity:%.2f \r\n",
+                 m702.CO2, m702.CH2O, m702.TVOC, m702.PM25, m702.PM10, m702.temperature, m702.humidity);
 
   // for (int i = 0; i < SMART_BUCKLE_NUM; i++)
   // {
