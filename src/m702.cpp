@@ -64,11 +64,11 @@ u8 M702_Scan()
                 checksum = checksum & 0x00ff;
                 if ((u8)checksum == revBuf[sizeof(revBuf) - 1])
                 {
-                    for (int i = 0; i < sizeof(revBuf); i++)
-                    {
-                        Serial2.printf("%02x ", revBuf[i]);
-                    }
-                    Serial2.println();
+                    // for (int i = 0; i < sizeof(revBuf); i++)
+                    // {
+                    //     Serial2.printf("%02x ", revBuf[i]);
+                    // }
+                    // Serial2.println();
                     M702 tmp;
                     tmp.CO2 = revBuf[2] << 8 | revBuf[3];
                     tmp.CH2O = revBuf[4] << 8 | revBuf[5];
