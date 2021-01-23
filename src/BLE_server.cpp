@@ -101,7 +101,7 @@ class MyBLECharacteristicCallbacks : public BLECharacteristicCallbacks
 
 void BS_Init()
 {
-    BLEDevice::init("Long name works now");
+    BLEDevice::init("ev_monitor");
     pServer = BLEDevice::createServer();
     pService = pServer->createService(SERVICE_UUID);
 

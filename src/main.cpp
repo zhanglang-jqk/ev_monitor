@@ -96,17 +96,17 @@ void loop()
   Serial2.printf("CO2:%d CH2O:%d TVOC:%d PM2.5:%d PM2.0:%d temperature:%.2f humidity:%.2f \r\n",
                  m702.CO2, m702.CH2O, m702.TVOC, m702.PM25, m702.PM10, m702.temperature, m702.humidity);
 
-  // for (int i = 0; i < SMART_BUCKLE_NUM; i++)
-  // {
-  //   if (smartBuckles[i].isNew == true)
-  //   {
-  //     smartBuckles[i].isNew = false;
-  //   }
-  // }
-  // if (m702.isnew == true) //m702 data is modify
-  // {
-  //   m702.isnew = false;
-  // }
+  for (int i = 0; i < SMART_BUCKLE_NUM; i++)
+  {
+    if (smartBuckles[i].isNew == true)
+    {
+      smartBuckles[i].isNew = false;
+    }
+  }
+  if (m702.isnew == true) //m702 data is modify
+  {
+    m702.isnew = false;
+  }
 
   if (millis() - hostTransimit_c > HOST_REPORT_INTERVAL_TIME)
   {

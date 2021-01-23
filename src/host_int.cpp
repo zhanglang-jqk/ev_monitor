@@ -58,7 +58,6 @@ void CI_Init()
 
     root["payload"] = payload;
     // root.add(payload);
-
 }
 void CI_Scan()
 {
@@ -81,14 +80,12 @@ void CI_Scan()
     root["payload"]["m702"]["PM10"] = m702.PM10;
     root["payload"]["m702"]["temperature"] = m702.temperature;
     root["payload"]["m702"]["humidity"] = m702.humidity;
-
-
 }
 
 char jsonBuf[1024] = {0};
 void CI_Transimit()
 {
-    serializeJson(payload, jsonBuf, sizeof(jsonBuf));
+    serializeJson(root["payload"], jsonBuf, sizeof(jsonBuf));
     u16 checksum = 0;
     for (int i = 0; i < strlen(jsonBuf); i++)
     {
@@ -102,10 +99,7 @@ void CI_Transimit()
     CI_SERIAL.println(jsonBuf);
     Serial2.println(jsonBuf);
 
-
-
     // serializeJsonPretty(root,Serial2);
     // serializeJsonPretty(payload,Serial2);
-
 }
 //computer_int.cpp

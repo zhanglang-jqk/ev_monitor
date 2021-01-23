@@ -136,7 +136,7 @@ void LCD_Init()
 {
   // Serial.begin(115200);
   // Serial.println();
-  // Serial.println("setup");
+  // Serial.println("setup"); 
 
   display.init(115200); // enable diagnostic output on Serial
 
@@ -147,6 +147,7 @@ void LCD_Init()
   display.setTextColor(GxEPD_BLACK);
   display.setFont(LCD_FONT);
   display.setCursor(0, 0);
+  display.update();
 }
 
 void LCD_Test()

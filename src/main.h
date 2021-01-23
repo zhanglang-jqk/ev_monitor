@@ -13,7 +13,7 @@
 // #include "ch/bsp.h"
 #include <Arduino.h>
 /* 宏定义 ----------------------------------------------------------------------*/
-#define SMART_BUCKLE_NUM 3
+#define SMART_BUCKLE_NUM 1
 /* 类型定义 --------------------------------------------------------------------*/
 class SmartBuckle
 {
